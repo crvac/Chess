@@ -3,21 +3,13 @@ using System.Xml.Linq;
 
 namespace Chess;
 
-/// <summary>
-/// Coordinates by letters
-/// </summary>
-enum Cord
-{
-    A, B, C, D, E, F, G, H
-}
-
 class Program
 {
     static void Main()
     {
         Console.WriteLine("♙♘♗♖♕♔♟♞♝♜♛♚");
-        Coordinates(MakeANewBoard());
-        PlaceAFigure(MakeANewBoard());
+        PrintwCoordinates(MakeANewBoard());
+        ValidateCoordinates(MakeANewBoard());
     }
 
     /// <summary>
@@ -46,7 +38,7 @@ class Program
     /// Prints out the board with the coordinates.
     /// </summary>
     /// <param name="board">Chess board</param>
-    static void Coordinates(char[,] board)
+    static void PrintwCoordinates(char[,] board)
     {
         string[][] coordinates = new string[9][];
 
@@ -88,7 +80,7 @@ class Program
     /// Gets coordinates from user.
     /// </summary>
     /// <param name="board">Previous board</param>
-    static void PlaceAFigure(char[,] board)
+    static void ValidateCoordinates(char[,] board)
     {
         bool @continue = true;
 
@@ -124,8 +116,8 @@ class Program
     {
         board[coord2 - 1, coord1] = 'K';
         coord2--;
-        Coordinates(board);
-        AvailableMoves(coord1, coord2, board);
+        PrintwCoordinates(board);
+        CheckAvalableMoves(coord1, coord2, board);
         return board;
     }
 
@@ -135,46 +127,120 @@ class Program
     /// <param name="coord1">Letter coordinate</param>
     /// <param name="coord2">Number coordinate</param>
     /// <param name="board">The board with the figures on it</param>
-    static void AvailableMoves(int coord1, int coord2, char[,] board)
+    static void CheckAvalableMoves(int coord1, int coord2, char[,] board)
     {
+        int[,] avmoves = new int[8,2];
+        int i = 0;
         Console.Write($"Avalable moves for the knight on {(Cord)coord1}{coord2} are: ");
 
         // +2 +-1
         if ((coord2 + 2 <= 7 && coord1 + 1 <= 7) && board[coord2 + 2, coord1 + 1] != 'K')
         {
             Console.Write($"{(Cord)coord1 + 1}{(coord2+1) + 2} ");
+            avmoves[i,0] = coord1 + 1;
+            avmoves[i,1] = coord2 + 2;
+            i++;
         }
         if ((coord2 + 2 <= 7 && coord1 - 1 >= 0 ) && board[coord2 + 2, coord1 - 1] != 'K')
         {
             Console.Write($"{(Cord)coord1 - 1}{(coord2 + 1) + 2} ");
+            avmoves[i, 0] = coord1 - 1;
+            avmoves[i, 1] = coord2 + 2;
+            i++;
         }
         // -2 +-1
         if ((coord2 - 2 >= 0 && coord1 + 1 <= 7) && board[coord2 - 2, coord1 + 1] != 'K')
         {
             Console.Write($"{(Cord)coord1 + 1}{(coord2 + 1) - 2} ");
+            avmoves[i, 0] = coord1 + 1;
+            avmoves[i, 1] = coord2 - 2;
+            i++;
         }
         if ((coord2 - 2 >= 0 && coord1 - 1 >= 0) && board[coord2 - 2, coord1 - 1] != 'K')
         {
             Console.Write($"{(Cord)coord1 - 1}{(coord2 + 1) - 2} ");
+            avmoves[i, 0] = coord1 - 1;
+            avmoves[i, 1] = coord2 - 2;
+            i++;
         }
         // +1 +-2
         if ((coord2 + 1 <= 7 && coord1 + 2 <= 7) && board[coord2 + 1, coord1 + 2] != 'K')
         {
             Console.Write($"{(Cord)coord1 + 2}{(coord2 + 1) + 1} ");
+            avmoves[i, 0] = coord1 + 2;
+            avmoves[i, 1] = coord2 + 1;
+            i++;
         }
         if ((coord2 + 1 <= 7 && coord1 - 2 >= 0) && board[coord2 + 1, coord1 - 2] != 'K')
         {
             Console.Write($"{(Cord)coord1 - 2}{(coord2 + 1) + 1} ");
+            avmoves[i, 0] = coord1 - 2;
+            avmoves[i, 1] = coord2 + 1;
+            i++;
         }
         // -1 +-2
         if ((coord2 - 1 >= 0 && coord1 + 2 <= 7) && board[coord2 - 1, coord1 + 2] != 'K')
         {
             Console.Write($"{(Cord)coord1 + 2}{(coord2 + 1) - 1} ");
+            avmoves[i, 0] = coord1 + 2;
+            avmoves[i, 1] = coord2 - 1;
+            i++;
         }
         if ((coord2 - 1 >= 0 && coord1 - 2 >= 0) && board[coord2 - 1, coord1 - 2] != 'K')
         {
             Console.Write($"{(Cord)coord1 - 2}{(coord2 + 1) - 1} ");
+            avmoves[i, 0] = coord1 - 2;
+            avmoves[i, 1] = coord2 - 1;
         }
         Console.WriteLine();
+
+        Console.Write("Do you want to move the piece? (Y/N)");
+        string yesno = Console.ReadLine();
+        if (yesno.ToUpper() == "Y") MovePiece(coord1, coord2, avmoves, board);
+        else ValidateCoordinates(board);
+    }
+
+    /// <summary>
+    /// Moves the piece you put on the board.
+    /// </summary>
+    /// <param name="coord1">the letter coordinate the pice is on</param>
+    /// <param name="coord2">the number coordinate the pice is on</param>
+    /// <param name="avmoves">Avalable moves</param>
+    /// <param name="board">Your borad</param>
+    static void MovePiece(int coord1, int coord2, int[,] avmoves, char[,] board)
+    { 
+        if ((coord1 + coord2 + 2) % 2 == 0) board[coord2, coord1] = '■'; //■
+        else board[coord2, coord1] = '_';
+
+        bool @continue = true;
+        do
+        {
+            Console.WriteLine("Enter coordinates from the list: ");
+            string newcoord = Console.ReadLine();
+            if (newcoord.Length == 2 && (char.ToUpper(newcoord[0]) <= 'H' && char.ToUpper(newcoord[0]) >= 'A'))
+            {
+                if (int.TryParse(newcoord[1].ToString(), out int newcoord2) && newcoord2 >= 1 && newcoord2 <= 8)
+                {
+                    int newcoord1 = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(newcoord[0]).ToString());
+                    for (int i = 0; i < 8; i ++)
+                    {
+                        if (newcoord1 == avmoves[i, 0] && newcoord2-1 == avmoves[i, 1])
+                        {
+                            PlaceOnBoard(newcoord1, newcoord2, board);
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input");
+                    @continue = true;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid input");
+                @continue = true;
+            }
+        } while (@continue);
     }
 }
