@@ -115,7 +115,7 @@ class Program
     /// <returns></returns>
     static char[,] PlaceOnBoard(int coord1, int coord2, char[,] board)
     {
-        board[coord2 - 1, coord1] = 'K';
+        board[coord2 - 1, coord1] = 'N';
         coord2--;
         PrintwCoordinates(board);
         CheckAvalableMoves(coord1, coord2, board);
@@ -135,14 +135,14 @@ class Program
         Console.Write($"Avalable moves for the knight on {(Cord)coord1}{coord2+1} are: ");
 
         // +2 +-1
-        if ((coord2 + 2 <= 7 && coord1 + 1 <= 7) && board[coord2 + 2, coord1 + 1] != 'K')
+        if ((coord2 + 2 <= 7 && coord1 + 1 <= 7) && board[coord2 + 2, coord1 + 1] != 'N')
         {
             Console.Write($"{(Cord)coord1 + 1}{(coord2+1) + 2} ");
             avmoves[i,0] = coord1 + 1;
             avmoves[i,1] = coord2 + 2;
             i++;
         }
-        if ((coord2 + 2 <= 7 && coord1 - 1 >= 0 ) && board[coord2 + 2, coord1 - 1] != 'K')
+        if ((coord2 + 2 <= 7 && coord1 - 1 >= 0 ) && board[coord2 + 2, coord1 - 1] != 'N')
         {
             Console.Write($"{(Cord)coord1 - 1}{(coord2 + 1) + 2} ");
             avmoves[i, 0] = coord1 - 1;
@@ -150,14 +150,14 @@ class Program
             i++;
         }
         // -2 +-1
-        if ((coord2 - 2 >= 0 && coord1 + 1 <= 7) && board[coord2 - 2, coord1 + 1] != 'K')
+        if ((coord2 - 2 >= 0 && coord1 + 1 <= 7) && board[coord2 - 2, coord1 + 1] != 'N')
         {
             Console.Write($"{(Cord)coord1 + 1}{(coord2 + 1) - 2} ");
             avmoves[i, 0] = coord1 + 1;
             avmoves[i, 1] = coord2 - 2;
             i++;
         }
-        if ((coord2 - 2 >= 0 && coord1 - 1 >= 0) && board[coord2 - 2, coord1 - 1] != 'K')
+        if ((coord2 - 2 >= 0 && coord1 - 1 >= 0) && board[coord2 - 2, coord1 - 1] != 'N')
         {
             Console.Write($"{(Cord)coord1 - 1}{(coord2 + 1) - 2} ");
             avmoves[i, 0] = coord1 - 1;
@@ -165,14 +165,14 @@ class Program
             i++;
         }
         // +1 +-2
-        if ((coord2 + 1 <= 7 && coord1 + 2 <= 7) && board[coord2 + 1, coord1 + 2] != 'K')
+        if ((coord2 + 1 <= 7 && coord1 + 2 <= 7) && board[coord2 + 1, coord1 + 2] != 'N')
         {
             Console.Write($"{(Cord)coord1 + 2}{(coord2 + 1) + 1} ");
             avmoves[i, 0] = coord1 + 2;
             avmoves[i, 1] = coord2 + 1;
             i++;
         }
-        if ((coord2 + 1 <= 7 && coord1 - 2 >= 0) && board[coord2 + 1, coord1 - 2] != 'K')
+        if ((coord2 + 1 <= 7 && coord1 - 2 >= 0) && board[coord2 + 1, coord1 - 2] != 'N')
         {
             Console.Write($"{(Cord)coord1 - 2}{(coord2 + 1) + 1} ");
             avmoves[i, 0] = coord1 - 2;
@@ -180,14 +180,14 @@ class Program
             i++;
         }
         // -1 +-2
-        if ((coord2 - 1 >= 0 && coord1 + 2 <= 7) && board[coord2 - 1, coord1 + 2] != 'K')
+        if ((coord2 - 1 >= 0 && coord1 + 2 <= 7) && board[coord2 - 1, coord1 + 2] != 'N')
         {
             Console.Write($"{(Cord)coord1 + 2}{(coord2 + 1) - 1} ");
             avmoves[i, 0] = coord1 + 2;
             avmoves[i, 1] = coord2 - 1;
             i++;
         }
-        if ((coord2 - 1 >= 0 && coord1 - 2 >= 0) && board[coord2 - 1, coord1 - 2] != 'K')
+        if ((coord2 - 1 >= 0 && coord1 - 2 >= 0) && board[coord2 - 1, coord1 - 2] != 'N')
         {
             Console.Write($"{(Cord)coord1 - 2}{(coord2 + 1) - 1} ");
             avmoves[i, 0] = coord1 - 2;
