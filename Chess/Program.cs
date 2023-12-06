@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 
 namespace Chess;
@@ -131,7 +132,7 @@ class Program
     {
         int[,] avmoves = new int[8,2];
         int i = 0;
-        Console.Write($"Avalable moves for the knight on {(Cord)coord1}{coord2} are: ");
+        Console.Write($"Avalable moves for the knight on {(Cord)coord1}{coord2+1} are: ");
 
         // +2 +-1
         if ((coord2 + 2 <= 7 && coord1 + 1 <= 7) && board[coord2 + 2, coord1 + 1] != 'K')
@@ -192,11 +193,12 @@ class Program
             avmoves[i, 0] = coord1 - 2;
             avmoves[i, 1] = coord2 - 1;
         }
+        
         Console.WriteLine();
-
+        int maxnumberofmoves = i;
         Console.Write("Do you want to move the piece? (Y/N)");
         string yesno = Console.ReadLine();
-        if (yesno.ToUpper() == "Y") MovePiece(coord1, coord2, avmoves, board);
+        if (yesno.ToUpper() == "Y") MovePiece(coord1, coord2, avmoves, board, maxnumberofmoves);
         else ValidateCoordinates(board);
     }
 
@@ -207,7 +209,7 @@ class Program
     /// <param name="coord2">the number coordinate the pice is on</param>
     /// <param name="avmoves">Avalable moves</param>
     /// <param name="board">Your borad</param>
-    static void MovePiece(int coord1, int coord2, int[,] avmoves, char[,] board)
+    static void MovePiece(int coord1, int coord2, int[,] avmoves, char[,] board, int max)
     { 
         if ((coord1 + coord2 + 2) % 2 == 0) board[coord2, coord1] = '■'; //■
         else board[coord2, coord1] = '_';
@@ -222,13 +224,15 @@ class Program
                 if (int.TryParse(newcoord[1].ToString(), out int newcoord2) && newcoord2 >= 1 && newcoord2 <= 8)
                 {
                     int newcoord1 = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(newcoord[0]).ToString());
-                    for (int i = 0; i < 8; i ++)
+                    for (int i = 0; i < max; i ++)
                     {
-                        if (newcoord1 == avmoves[i, 0] && newcoord2-1 == avmoves[i, 1])
+                        if (newcoord1 == avmoves[i, 0] && newcoord2 - 1 == avmoves[i, 1])
                         {
                             PlaceOnBoard(newcoord1, newcoord2, board);
+                            @continue = false;
                         }
                     }
+                    Console.WriteLine("Can't move the piece there.");
                 }
                 else
                 {
