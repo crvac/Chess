@@ -169,6 +169,30 @@ class Program
                             }
                             @continue2 = false;
                             break;
+                        case "Q":
+                            board[coord2, coord1] = 'Q';
+                            PrintwCoordinates(board);
+                            Console.WriteLine("Lets see if you know your move!");
+                            newcoord = InputCoorinates();
+                            if (ValidateCoordinates(newcoord))
+                            {
+                                Console.WriteLine(MovePiece.Queen(coord, newcoord));
+                                @continue = false;
+                            }
+                            @continue2 = false;
+                            break;
+                        case "K":
+                            board[coord2, coord1] = 'K';
+                            PrintwCoordinates(board);
+                            Console.WriteLine("Lets see if you know your move!");
+                            newcoord = InputCoorinates();
+                            if (ValidateCoordinates(newcoord))
+                            {
+                                Console.WriteLine(MovePiece.King(coord, newcoord));
+                                @continue = false;
+                            }
+                            @continue2 = false;
+                            break;
                         default:
                             Console.WriteLine("Invalid Piece name");
                             break;

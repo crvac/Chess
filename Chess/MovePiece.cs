@@ -17,7 +17,7 @@ internal class MovePiece
     /// <param name="oldcoord">Old coordinate</param>
     /// <param name="newcoord">new coordinate to validate</param>
     /// <returns>true or false</returns>
-    public static bool Knight(string oldcoord, string newcoord)
+    public static bool Knight(string oldcoord, string newcoord) // if (|X2-X1|=1 and |Y2-Y1|=2) or (|X2-X1|=2 and |Y2-Y1|=1).
     {
         int letter = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(oldcoord[0]).ToString());
         int number = int.Parse(oldcoord[1].ToString()) - 1;
