@@ -8,9 +8,9 @@ class Program
 {
     static void Main()
     {
-        Console.WriteLine("♙♘♗♖♕♔♟♞♝♜♛♚");
+        //Console.WriteLine("♙♘♗♖♕♔♟♞♝♜♛♚");
         PrintwCoordinates(MakeANewBoard());
-        ValidateCoordinates(MakeANewBoard());
+        PlaceOnBoard(MakeANewBoard());
     }
 
     /// <summary>
@@ -78,32 +78,33 @@ class Program
     }
 
     /// <summary>
-    /// Gets coordinates from user.
+    /// Takes the input coordinates.
     /// </summary>
-    /// <param name="board">Previous board</param>
-    static void ValidateCoordinates(char[,] board)
+    /// <returns>coordinates</returns>
+    static string InputCoorinates()
     {
-        bool @continue = true;
+        Console.Write("Enter coordinates to put the piece on (A -> H, 1 -> 8) (example: a1, b8, h3): ");
+        string coord = Console.ReadLine();
+        return coord;
+    }
 
-        do
+    /// <summary>
+    /// Valdiates the coordinates.
+    /// </summary>
+    /// <param name="coord">Coordinate input (Letter + Number)</param>
+    /// <returns>true or false</returns>
+    static bool ValidateCoordinates(string coord)
+    {
+        if (coord.Length == 2 && (char.ToUpper(coord[0]) <= 'H' && char.ToUpper(coord[0]) >= 'A')
+                && int.TryParse(coord[1].ToString(), out int coord2) && coord2 >= 1 && coord2 <= 8)
         {
-            Console.Write("Enter coordinates to put the knight on (A -> H, 1 -> 8) (example: a1, b8, h3): ");
-            string coord = Console.ReadLine();
-            if (coord.Length == 2 && (char.ToUpper(coord[0]) <= 'H' && char.ToUpper(coord[0]) >= 'A'))
-            {
-                if (int.TryParse(coord[1].ToString(), out int coord2) && coord2 >= 1 && coord2 <= 8)
-                {
-                    int coord1 = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(coord[0]).ToString());
-                    @continue = true;
-
-                    PlaceOnBoard(coord1, coord2, board);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid input");
-            }
-        } while (@continue);
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("Invalid input");
+            return false;
+        }
     }
 
     /// <summary>
@@ -113,138 +114,76 @@ class Program
     /// <param name="coord2">Number coordinate (need to substract 1 as array starts from 0)</param>
     /// <param name="board">Previous board</param>
     /// <returns></returns>
-    static char[,] PlaceOnBoard(int coord1, int coord2, char[,] board)
+    static char[,] PlaceOnBoard(char[,] board)
     {
-        board[coord2 - 1, coord1] = 'N';
-        coord2--;
-        PrintwCoordinates(board);
-        CheckAvalableMoves(coord1, coord2, board);
-        return board;
-    }
-
-    /// <summary>
-    /// Shows avalable moves for the knight (as of now).
-    /// </summary>
-    /// <param name="coord1">Letter coordinate</param>
-    /// <param name="coord2">Number coordinate</param>
-    /// <param name="board">The board with the figures on it</param>
-    static void CheckAvalableMoves(int coord1, int coord2, char[,] board)
-    {
-        int[,] avmoves = new int[8,2];
-        int i = 0;
-        Console.Write($"Avalable moves for the knight on {(Cord)coord1}{coord2+1} are: ");
-
-        // +2 +-1
-        if ((coord2 + 2 <= 7 && coord1 + 1 <= 7) && board[coord2 + 2, coord1 + 1] != 'N')
-        {
-            Console.Write($"{(Cord)coord1 + 1}{(coord2+1) + 2} ");
-            avmoves[i,0] = coord1 + 1;
-            avmoves[i,1] = coord2 + 2;
-            i++;
-        }
-        if ((coord2 + 2 <= 7 && coord1 - 1 >= 0 ) && board[coord2 + 2, coord1 - 1] != 'N')
-        {
-            Console.Write($"{(Cord)coord1 - 1}{(coord2 + 1) + 2} ");
-            avmoves[i, 0] = coord1 - 1;
-            avmoves[i, 1] = coord2 + 2;
-            i++;
-        }
-        // -2 +-1
-        if ((coord2 - 2 >= 0 && coord1 + 1 <= 7) && board[coord2 - 2, coord1 + 1] != 'N')
-        {
-            Console.Write($"{(Cord)coord1 + 1}{(coord2 + 1) - 2} ");
-            avmoves[i, 0] = coord1 + 1;
-            avmoves[i, 1] = coord2 - 2;
-            i++;
-        }
-        if ((coord2 - 2 >= 0 && coord1 - 1 >= 0) && board[coord2 - 2, coord1 - 1] != 'N')
-        {
-            Console.Write($"{(Cord)coord1 - 1}{(coord2 + 1) - 2} ");
-            avmoves[i, 0] = coord1 - 1;
-            avmoves[i, 1] = coord2 - 2;
-            i++;
-        }
-        // +1 +-2
-        if ((coord2 + 1 <= 7 && coord1 + 2 <= 7) && board[coord2 + 1, coord1 + 2] != 'N')
-        {
-            Console.Write($"{(Cord)coord1 + 2}{(coord2 + 1) + 1} ");
-            avmoves[i, 0] = coord1 + 2;
-            avmoves[i, 1] = coord2 + 1;
-            i++;
-        }
-        if ((coord2 + 1 <= 7 && coord1 - 2 >= 0) && board[coord2 + 1, coord1 - 2] != 'N')
-        {
-            Console.Write($"{(Cord)coord1 - 2}{(coord2 + 1) + 1} ");
-            avmoves[i, 0] = coord1 - 2;
-            avmoves[i, 1] = coord2 + 1;
-            i++;
-        }
-        // -1 +-2
-        if ((coord2 - 1 >= 0 && coord1 + 2 <= 7) && board[coord2 - 1, coord1 + 2] != 'N')
-        {
-            Console.Write($"{(Cord)coord1 + 2}{(coord2 + 1) - 1} ");
-            avmoves[i, 0] = coord1 + 2;
-            avmoves[i, 1] = coord2 - 1;
-            i++;
-        }
-        if ((coord2 - 1 >= 0 && coord1 - 2 >= 0) && board[coord2 - 1, coord1 - 2] != 'N')
-        {
-            Console.Write($"{(Cord)coord1 - 2}{(coord2 + 1) - 1} ");
-            avmoves[i, 0] = coord1 - 2;
-            avmoves[i, 1] = coord2 - 1;
-        }
-        
-        Console.WriteLine();
-        int maxnumberofmoves = i;
-        Console.Write("Do you want to move the piece? (Y/N)");
-        string yesno = Console.ReadLine();
-        if (yesno.ToUpper() == "Y") MovePiece(coord1, coord2, avmoves, board, maxnumberofmoves);
-        else ValidateCoordinates(board);
-    }
-
-    /// <summary>
-    /// Moves the piece you put on the board.
-    /// </summary>
-    /// <param name="coord1">the letter coordinate the pice is on</param>
-    /// <param name="coord2">the number coordinate the pice is on</param>
-    /// <param name="avmoves">Avalable moves</param>
-    /// <param name="board">Your borad</param>
-    static void MovePiece(int coord1, int coord2, int[,] avmoves, char[,] board, int max)
-    { 
-        if ((coord1 + coord2 + 2) % 2 == 0) board[coord2, coord1] = '■'; //■
-        else board[coord2, coord1] = '_';
-
         bool @continue = true;
+
         do
         {
-            Console.WriteLine("Enter coordinates from the list: ");
-            string newcoord = Console.ReadLine();
-            if (newcoord.Length == 2 && (char.ToUpper(newcoord[0]) <= 'H' && char.ToUpper(newcoord[0]) >= 'A'))
+            string coord = InputCoorinates();
+            if (ValidateCoordinates(coord))
             {
-                if (int.TryParse(newcoord[1].ToString(), out int newcoord2) && newcoord2 >= 1 && newcoord2 <= 8)
+                int coord1 = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(coord[0]).ToString());
+                int coord2 = int.Parse(coord[1].ToString()) - 1;
+                bool @continue2 = true;
+                do
                 {
-                    int newcoord1 = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(newcoord[0]).ToString());
-                    for (int i = 0; i < max; i ++)
+                    Console.Write("What piece do you want to put on the board? (K = king, Q = Queen, B = Bishop, R = Rook, N = knight)");
+                    string piece = Console.ReadLine();
+                    string newcoord;
+                    switch (piece.ToUpper())
                     {
-                        if (newcoord1 == avmoves[i, 0] && newcoord2 - 1 == avmoves[i, 1])
-                        {
-                            PlaceOnBoard(newcoord1, newcoord2, board);
-                            @continue = false;
-                        }
+                        case "N":
+                            board[coord2, coord1] = 'N';
+                            PrintwCoordinates(board);
+                            Console.WriteLine("Lets see if you know your move!");
+                            newcoord = InputCoorinates();
+                           if (ValidateCoordinates(newcoord))
+                            {
+                                Console.WriteLine(MovePiece.Knight(coord ,newcoord));
+                                @continue = false;
+                            }
+                           @continue2 = false;
+                           break;
+                        case "R":
+                            board[coord2, coord1] = 'R';
+                            PrintwCoordinates(board);
+                            Console.WriteLine("Lets see if you know your move!");
+                            newcoord = InputCoorinates();
+                            if (ValidateCoordinates(newcoord))
+                            {
+                                Console.WriteLine(MovePiece.Rook(coord, newcoord));
+                                @continue = false;
+                            }
+                            @continue2 = false;
+                            break;
+                        case "B":
+                            board[coord2, coord1] = 'B';
+                            PrintwCoordinates(board);
+                            Console.WriteLine("Lets see if you know your move!");
+                            newcoord = InputCoorinates();
+                            if (ValidateCoordinates(newcoord))
+                            {
+                                Console.WriteLine(MovePiece.Bishop(coord, newcoord));
+                                @continue = false;
+                            }
+                            @continue2 = false;
+                            break;
+                        default:
+                            Console.WriteLine("Invalid Piece name");
+                            break;
                     }
-                    Console.WriteLine("Can't move the piece there.");
-                }
-                else
-                {
-                    Console.WriteLine("Invalid input");
-                    @continue = true;
-                }
+                } while (@continue2);
             }
             else
             {
-                Console.WriteLine("Invalid input");
+                Console.WriteLine("Invalid coordinates, try again");
                 @continue = true;
             }
         } while (@continue);
+
+        return board;
     }
+
+
 }
