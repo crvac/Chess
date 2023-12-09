@@ -17,13 +17,10 @@ internal class MovePiece
     /// <param name="oldcoord">Old coordinate</param>
     /// <param name="newcoord">new coordinate to validate</param>
     /// <returns>true or false</returns>
-    public static bool Knight(string oldcoord, string newcoord) // if (|X2-X1|=1 and |Y2-Y1|=2) or (|X2-X1|=2 and |Y2-Y1|=1).
+    public bool KnightValidate(string oldcoord, string newcoord) // if (|X2-X1|=1 and |Y2-Y1|=2) or (|X2-X1|=2 and |Y2-Y1|=1).
     {
-        int letter = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(oldcoord[0]).ToString());
-        int number = int.Parse(oldcoord[1].ToString()) - 1;
-
-        int newletter = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(newcoord[0]).ToString());
-        int newnumber = int.Parse(newcoord[1].ToString()) - 1;
+        var fromCoord = new Coords(oldcoord);
+        var toCoord = new Coords(newcoord);
 
         // All possible moves of a knight
         int[] X = { 2, 2, 1, 1, -2, -2, -1, -1 };
@@ -32,7 +29,7 @@ internal class MovePiece
         // Check if the move is valid or not
         for (int i = 0; i < 8; i++)
         {
-            if (newletter == letter + X[i] && newnumber == number + Y[i]) return true;
+            if (toCoord.letter == fromCoord.letter + X[i] && toCoord.number == fromCoord.number + Y[i]) return true;
         }
 
         return false;
@@ -46,13 +43,10 @@ internal class MovePiece
     /// <returns>true or false</returns>
     public static bool Rook(string oldcoord, string newcoord)
     {
-        int letter = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(oldcoord[0]).ToString());
-        int number = int.Parse(oldcoord[1].ToString()) - 1;
+        var fromCoord = new Coords(oldcoord);
+        var toCoord = new Coords(newcoord);
 
-        int newletter = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(newcoord[0]).ToString());
-        int newnumber = int.Parse(newcoord[1].ToString()) - 1;
-
-        return newletter == letter ^ newnumber == number;        
+        return toCoord.letter == fromCoord.letter ^ toCoord.number == fromCoord.number;        
     }
 
     /// <summary>
@@ -63,20 +57,16 @@ internal class MovePiece
     /// <returns>true or false</returns>
     public static bool Bishop(string oldcoord, string newcoord)
     {
-        int letter = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(oldcoord[0]).ToString());
-        int number = int.Parse(oldcoord[1].ToString()) - 1;
-
-        int newletter = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(newcoord[0]).ToString());
-        int newnumber = int.Parse(newcoord[1].ToString()) - 1;
+        var fromCoord = new Coords(oldcoord);
+        var toCoord = new Coords(newcoord);
 
         for (int i = 1; i < 8; i++)
         {
-            if (Math.Abs(newletter - letter) == Math.Abs(newnumber - number)) return true;
+            if (Math.Abs(toCoord.letter - fromCoord.letter) == Math.Abs(toCoord.number - fromCoord.number)) return true;
         }
 
         return false;
     }
-
 
     /// <summary>
     /// Validates the move for the Queen piece
@@ -97,12 +87,9 @@ internal class MovePiece
     /// <returns>true or false</returns>
     public static bool King(string oldcoord, string newcoord) //|X2-X1|<=1 and |Y2-Y1|<=1.
     {
-        int letter = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(oldcoord[0]).ToString());
-        int number = int.Parse(oldcoord[1].ToString()) - 1;
+        var fromCoord = new Coords(oldcoord);
+        var toCoord = new Coords(newcoord);
 
-        int newletter = (int)Cord.Parse(typeof(Chess.Cord), char.ToUpper(newcoord[0]).ToString());
-        int newnumber = int.Parse(newcoord[1].ToString()) - 1;
-
-        return (Math.Abs(newletter - letter) <=1 && Math.Abs(newnumber - number) <= 1);
+        return (Math.Abs(toCoord.letter - fromCoord.letter) <=1 && Math.Abs(toCoord.number - fromCoord.number) <= 1);
     }
 }
