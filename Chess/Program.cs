@@ -12,6 +12,9 @@ class Program
         RunChessSession();
     }
 
+    /// <summary>
+    /// Runs the application
+    /// </summary>
     static void RunChessSession()
     {
         var boardActions = new Board();

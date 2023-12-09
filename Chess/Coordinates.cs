@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Chess;
 
+/// <summary>
+/// Takes in the string of the coordinate input and gives integer values for number and letter.
+/// </summary>
 struct Coords
 {
     public int letter;
