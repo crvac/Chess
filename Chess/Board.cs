@@ -140,10 +140,10 @@ internal class Board
                 figure = new Knight();
                 break;
             case "Q":
-                figure = new Knight();
+                figure = new Queen();
                 break;
             case "R":
-                figure = new Knight();
+                figure = new Rook();
                 break;
             default : 
                 break;
