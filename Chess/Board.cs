@@ -1,38 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Chess;
+﻿using Chess;
+using Chess.Figures;
+using Chess.Figures.Contracts;
+using System.Drawing;
 
 internal class Board
 {
+    // The board
+    private char[,] board = new char[8, 8];
+
     /// <summary>
     /// Creates a chessboard without the coordinates.
     /// </summary>
     /// <returns>An array of the board</returns>
-    public char[,] MakeNewBoard()
+    public void MakeNewBoard()
     {
-        char[,] board = new char[8, 8];
-
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
-                if ((i + j + 2) % 2 == 0) board[i, j] = '_'; //■
-                else board[i, j] = '■';
+                if ((i + j + 2) % 2 == 0) board[i, j] = ' '; //■
+                else board[i, j] = ' ';
             }
         }
-
-        return board;
     }
 
     /// <summary>
     /// Prints out the board with the coordinates.
     /// </summary>
     /// <param name="board">Chess board</param>
-    public void PrintwCoordinates(char[,] board)
+    public void PrintBoard()
     {
         string[][] coordinates = new string[9][];
 
@@ -54,7 +50,7 @@ internal class Board
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    Console.Write(coordinates[i][j]);
+                    Console.Write(coordinates[i][j] + " ");
                 }
             }
             else
@@ -63,8 +59,12 @@ internal class Board
                 Console.Write(coordinates[i][0]);
                 for (int j = 0; j < 8; j++)
                 {
+                    if ((i + j + 2) % 2 == 0) Console.BackgroundColor = ConsoleColor.DarkRed; //■
+                    else Console.BackgroundColor = ConsoleColor.DarkGray;
+                    Console.Write(" ");
                     Console.Write(board[i - 1, j]);
                 }
+                Console.ResetColor();
             }
         }
         Console.WriteLine();
@@ -73,103 +73,89 @@ internal class Board
     /// <summary>
     /// Places a figure on the specified coordinates.
     /// </summary>
-    /// <param name="coord1">Letter coordinate</param>
-    /// <param name="coord2">Number coordinate (need to substract 1 as array starts from 0)</param>
     /// <param name="board">Previous board</param>
-    /// <returns></returns>
-    public char[,] PlaceOnBoard(char[,] board)
+    public void PlaceOnBoard()
     {
-        var moveFigure = new MovePiece();
         var coordinateActions = new Coordinates();
-        bool @continue = true;
 
-        do
+        string coord = coordinateActions.InputCoorinates();
+        if (coordinateActions.ValidateCoordinates(coord))
         {
-            string coord = coordinateActions.InputCoorinates();
-            if (coordinateActions.ValidateCoordinates(coord))
-            {
-                var coordinates = new Coords(coord);
-                bool @continue2 = true;
-                do
-                {
-                    Console.Write("What piece do you want to put on the board? (K = king, Q = Queen, B = Bishop, R = Rook, N = knight)");
-                    string piece = Console.ReadLine();
-                    string newcoord;
-                    switch (piece.ToUpper())
-                    {
-                        case "N":
-                            board[coordinates.number, coordinates.letter] = 'N';
-                            PrintwCoordinates(board);
-                            Console.WriteLine("Lets see if you know your move!");
-                            newcoord = coordinateActions.InputCoorinates();
-                            if (coordinateActions.ValidateCoordinates(newcoord))
-                            {
-                                Console.WriteLine(moveFigure.KnightValidate(coord, newcoord)); //uxxel
-                                @continue = false;
-                            }
-                            @continue2 = false;
-                            break;
-                        case "R":
-                            board[coordinates.number, coordinates.letter] = 'R';
-                            PrintwCoordinates(board);
-                            Console.WriteLine("Lets see if you know your move!");
-                            newcoord = coordinateActions.InputCoorinates();
-                            if (coordinateActions.ValidateCoordinates(newcoord))
-                            {
-                                Console.WriteLine(MovePiece.Rook(coord, newcoord));
-                                @continue = false;
-                            }
-                            @continue2 = false;
-                            break;
-                        case "B":
-                            board[coordinates.number, coordinates.letter] = 'B';
-                            PrintwCoordinates(board);
-                            Console.WriteLine("Lets see if you know your move!");
-                            newcoord = coordinateActions.InputCoorinates();
-                            if (coordinateActions.ValidateCoordinates(newcoord))
-                            {
-                                Console.WriteLine(MovePiece.Bishop(coord, newcoord));
-                                @continue = false;
-                            }
-                            @continue2 = false;
-                            break;
-                        case "Q":
-                            board[coordinates.number, coordinates.letter] = 'Q';
-                            PrintwCoordinates(board);
-                            Console.WriteLine("Lets see if you know your move!");
-                            newcoord = coordinateActions.InputCoorinates();
-                            if (coordinateActions.ValidateCoordinates(newcoord))
-                            {
-                                Console.WriteLine(MovePiece.Queen(coord, newcoord));
-                                @continue = false;
-                            }
-                            @continue2 = false;
-                            break;
-                        case "K":
-                            board[coordinates.number, coordinates.letter] = 'K';
-                            PrintwCoordinates(board);
-                            Console.WriteLine("Lets move the piece now!");
-                            newcoord = coordinateActions.InputCoorinates();
-                            if (coordinateActions.ValidateCoordinates(newcoord))
-                            {
-                                Console.WriteLine(MovePiece.King(coord, newcoord));
-                                @continue = false;
-                            }
-                            @continue2 = false;
-                            break;
-                        default:
-                            Console.WriteLine("Invalid Piece name");
-                            break;
-                    }
-                } while (@continue2);
-            }
-            else
-            {
-                Console.WriteLine("Invalid coordinates, try again");
-                @continue = true;
-            }
-        } while (@continue);
+            var coordinates = new Coords();
+            coordinates = coordinates.StringCoordParse(coord);
 
-        return board;
+            bool tryagain = true;
+            do
+            {
+                Console.Write("What piece do you want to put on the board? (K = king, Q = Queen, B = Bishop, R = Rook, N = knight)");
+                string piece = Console.ReadLine();
+                if (FigureNames.TryParse(piece.ToUpper(), out FigureNames pieceUpper))
+                {
+                    board[coordinates.number, coordinates.numericLetter] = char.ToUpper(char.Parse(piece));
+                    PrintBoard();
+                    NewCordValidate(piece, coord);
+                    PrintBoard();
+                    tryagain = false;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid figure");
+                }
+            } while (tryagain);
+        }
+        else
+        {
+            Console.WriteLine("Invalid coordinates, try again");
+            PlaceOnBoard();
+        }
+
+    }
+
+    public void MoveFiguretoNewCoord(string oldcoord, string newcoord)
+    {
+        var coordAction = new Coords();
+
+        var fromCoords = coordAction.StringCoordParse(oldcoord);
+        var toCoords = coordAction.StringCoordParse(newcoord);
+
+        board[toCoords.number, toCoords.numericLetter] = char.ToUpper(board[fromCoords.number, fromCoords.numericLetter]);
+        board[fromCoords.number, fromCoords.numericLetter] = ' ';
+    }
+
+    public void NewCordValidate(string piece, string coord)
+    {
+        var coordinateActions = new Coordinates();
+        Console.WriteLine("Where do you want to move your piece?");
+        var newcoord = coordinateActions.InputCoorinates();
+        IMoveFigure figure = null;
+        switch (piece.ToUpper())
+        {
+            case "B":
+                figure = new Bishop();
+                break;
+            case "K":
+                figure = new King();
+                break;
+            case "N":
+                figure = new Knight();
+                break;
+            case "Q":
+                figure = new Knight();
+                break;
+            case "R":
+                figure = new Knight();
+                break;
+            default : 
+                break;
+
+        }
+
+        if (MoveFigure(figure, coord, newcoord)) MoveFiguretoNewCoord(coord, newcoord);
+        else NewCordValidate(piece.ToUpper(), coord);
+    }
+
+    public bool MoveFigure(IMoveFigure figure, string coord, string newcoord)
+    {
+        return figure.NewCoordMoveValidate(coord, newcoord);
     }
 }

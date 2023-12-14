@@ -9,6 +9,7 @@ class Program
     static void Main()
     {
         //Console.WriteLine("♙♘♗♖♕♔♟♞♝♜♛♚");
+
         RunChessSession();
     }
 
@@ -20,19 +21,13 @@ class Program
         var boardActions = new Board();
         do
         {
+            boardActions.MakeNewBoard();
             //Prints an empty Board
-            boardActions.PrintwCoordinates(boardActions.MakeNewBoard());
+            boardActions.PrintBoard();
             //Prints the board with your figure on it
-            boardActions.PlaceOnBoard(boardActions.MakeNewBoard());
+            boardActions.PlaceOnBoard();
+            Console.ReadLine();
         } while (true);
     }
-
-
-
-
-
-
-    
-
-    
+    // library unenanq, figure objectnery sarqel, guyn (Team) sarqel, move validation etc.
 }
