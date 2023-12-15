@@ -8,6 +8,7 @@ internal class Board
     // The board
     private char[,] board = new char[8, 8];
 
+    
     /// <summary>
     /// Creates a chessboard without the coordinates.
     /// </summary>
@@ -91,7 +92,7 @@ internal class Board
                 string piece = Console.ReadLine();
                 if (FigureNames.TryParse(piece.ToUpper(), out FigureNames pieceUpper))
                 {
-                    board[coordinates.number, coordinates.numericLetter] = char.ToUpper(char.Parse(piece));
+                    board[coordinates.number, coordinates.ParseLetterCoordinate(coordinates)] = char.ToUpper(char.Parse(piece));
                     PrintBoard();
                     NewCordValidate(piece, coord);
                     PrintBoard();
@@ -118,8 +119,8 @@ internal class Board
         var fromCoords = coordAction.StringCoordParse(oldcoord);
         var toCoords = coordAction.StringCoordParse(newcoord);
 
-        board[toCoords.number, toCoords.numericLetter] = char.ToUpper(board[fromCoords.number, fromCoords.numericLetter]);
-        board[fromCoords.number, fromCoords.numericLetter] = ' ';
+        board[toCoords.number, coordAction.ParseLetterCoordinate(toCoords)] = char.ToUpper(board[fromCoords.number, coordAction.ParseLetterCoordinate(fromCoords)]);
+        board[fromCoords.number, coordAction.ParseLetterCoordinate(fromCoords)] = ' ';
     }
 
     public void NewCordValidate(string piece, string coord)

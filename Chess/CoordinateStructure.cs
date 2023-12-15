@@ -13,11 +13,18 @@ public struct Coords
     {
         var numericcoord = new Coords();
 
-        numericcoord.numericLetter = (int)Letters.Parse(typeof(Letters), char.ToUpper(coordinate[0]).ToString());
+        //arandzin method\/
+        //numericcoord.numericLetter = (int)Letters.Parse(typeof(Letters), char.ToUpper(coordinate[0]).ToString());
+        
         numericcoord.letter = char.ToUpper(coordinate[0]);
         numericcoord.number = int.Parse(coordinate[1].ToString()) - 1;
 
         return numericcoord;
     }
 
+    public int ParseLetterCoordinate(Coords coordinate)
+    {
+        int numericLetter = int.Parse(coordinate.letter.ToString());
+        return numericLetter;
+    }
 }

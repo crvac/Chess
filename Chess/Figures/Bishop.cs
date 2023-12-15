@@ -18,7 +18,7 @@ internal class Bishop : IMoveFigure
         var fromCoord = coordStruct.StringCoordParse(oldcoord);
         var toCoord = coordStruct.StringCoordParse(newcoord);
 
-        return (Math.Abs(toCoord.numericLetter - fromCoord.numericLetter) == Math.Abs(toCoord.number - fromCoord.number));
+        return (Math.Abs(coordStruct.ParseLetterCoordinate(toCoord) - coordStruct.ParseLetterCoordinate(fromCoord)) == Math.Abs(toCoord.number - fromCoord.number));
 
     }
 

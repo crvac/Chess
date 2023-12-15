@@ -27,7 +27,7 @@ internal class Knight : IMoveFigure
         // Check if the move is valid or not
         for (int i = 0; i < 8; i++)
         {
-            if (toCoord.numericLetter == fromCoord.numericLetter + X[i] && toCoord.number == fromCoord.number + Y[i]) return true;
+            if (coordStruct.ParseLetterCoordinate(toCoord) == coordStruct.ParseLetterCoordinate(fromCoord) + X[i] && toCoord.number == fromCoord.number + Y[i]) return true;
         }
 
         return false;

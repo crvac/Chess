@@ -17,7 +17,7 @@ internal class King : IMoveFigure
         var fromCoord = coordStruct.StringCoordParse(oldcoord);
         var toCoord = coordStruct.StringCoordParse(newcoord);
 
-        return (Math.Abs(toCoord.letter - fromCoord.letter) <= 1 && Math.Abs(toCoord.number - fromCoord.number) <= 1);
+        return (Math.Abs(coordStruct.ParseLetterCoordinate(toCoord) - coordStruct.ParseLetterCoordinate(fromCoord)) <= 1 && Math.Abs(toCoord.number - fromCoord.number) <= 1);
     }
 
     public bool NewCoordMoveValidate(string coord, string newcoord)

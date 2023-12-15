@@ -17,7 +17,7 @@ internal class Rook : IMoveFigure
         var fromCoord = coordStruct.StringCoordParse(oldcoord);
         var toCoord = coordStruct.StringCoordParse(newcoord);
 
-        return toCoord.numericLetter == fromCoord.numericLetter ^ toCoord.number == fromCoord.number;
+        return coordStruct.ParseLetterCoordinate(toCoord) == coordStruct.ParseLetterCoordinate(fromCoord) ^ toCoord.number == fromCoord.number;
     }
 
     public bool NewCoordMoveValidate(string coord, string newcoord)
