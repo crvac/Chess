@@ -22,14 +22,18 @@ internal class Board
             {
                 //if ((i + j + 2) % 2 == 0) board[i, j] = ' '; //■
                 //else board[i, j] = ' ';
-                testBoard[i, j].name = FigureNames.empty;
-                testBoard[i, j].team = FigureTeam.empty;
+                  testBoard[i, j].name = FigureNames.empty;
+                  testBoard[i, j].team = FigureTeam.empty;
             }
         }
-        /*
-        testBoard[0, 0].name = FigureNames.R;
-        testBoard[0, 0].team = FigureTeam.white;
-        */
+        testBoard[0, 0] = new FigureStructure("R", "W");
+        testBoard[0, 1] = new FigureStructure("N", "W");
+        testBoard[0, 2] = new FigureStructure("B", "W");
+        // mnacacy;
+
+        testBoard[7, 0] = new FigureStructure("R", "B");
+        // mnacacy
+
     }
 
     /// <summary>
@@ -74,7 +78,7 @@ internal class Board
                     {
                         Console.Write(" ");
                     }
-                    else if((int)testBoard[i - 1, j].team == 0)
+                    else if ((int)testBoard[i - 1, j].team == 0)
                     {
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.Write(testBoard[i - 1, j].name);
@@ -169,17 +173,39 @@ internal class Board
             case "R":
                 figure = new Rook();
                 break;
-            default : 
+            default:
                 break;
 
         }
 
-        if (MoveFigure(figure, coord, newcoord)) MoveFiguretoNewCoord(coord, newcoord);
+        if (MoveFigure(figure, coord, newcoord) && TakeValidate(coord, newcoord))
+        {
+            MoveFiguretoNewCoord(coord, newcoord);
+        }
         else NewCordValidate(piece.ToUpper(), coord);
     }
 
     public bool MoveFigure(IMoveFigure figure, string coord, string newcoord)
     {
         return figure.NewCoordMoveValidate(coord, newcoord);
+    }
+
+    /// <summary>
+    /// Checks if there's a figure on the new coordinate, the nchecks if it can be taken
+    /// </summary>
+    /// <param name="coord">The coordinate the piece is on</param>
+    /// <param name="newcoord">The coordinate the piece needs to move to</param>
+    /// <returns>True or Flase</returns>
+    public bool TakeValidate(string coord, string newcoord)
+    {
+        var coordAction = new Coords();
+
+        var fromCoords = coordAction.StringCoordParse(coord);
+        var toCoords = coordAction.StringCoordParse(newcoord);
+
+        if (testBoard[toCoords.number, coordAction.ParseLetterCoordinate(toCoords)].team == FigureTeam.empty)
+            return true;
+        else
+            return (testBoard[toCoords.number, coordAction.ParseLetterCoordinate(toCoords)].team != testBoard[fromCoords.number, coordAction.ParseLetterCoordinate(fromCoords)].team);
     }
 }
