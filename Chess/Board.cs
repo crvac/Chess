@@ -7,8 +7,9 @@ internal class Board
 {
     // The board
     private char[,] board = new char[8, 8];
+    private FigureStructure[,] testBoard = new FigureStructure[8, 8];
 
-    
+
     /// <summary>
     /// Creates a chessboard without the coordinates.
     /// </summary>
@@ -19,10 +20,16 @@ internal class Board
         {
             for (int j = 0; j < 8; j++)
             {
-                if ((i + j + 2) % 2 == 0) board[i, j] = ' '; //■
-                else board[i, j] = ' ';
+                //if ((i + j + 2) % 2 == 0) board[i, j] = ' '; //■
+                //else board[i, j] = ' ';
+                testBoard[i, j].name = FigureNames.empty;
+                testBoard[i, j].team = FigureTeam.empty;
             }
         }
+        /*
+        testBoard[0, 0].name = FigureNames.R;
+        testBoard[0, 0].team = FigureTeam.white;
+        */
     }
 
     /// <summary>
@@ -63,7 +70,21 @@ internal class Board
                     if ((i + j + 2) % 2 == 0) Console.BackgroundColor = ConsoleColor.DarkRed; //■
                     else Console.BackgroundColor = ConsoleColor.DarkGray;
                     Console.Write(" ");
-                    Console.Write(board[i - 1, j]);
+                    if (testBoard[i - 1, j].name == FigureNames.empty)
+                    {
+                        Console.Write(" ");
+                    }
+                    else if((int)testBoard[i - 1, j].team == 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write(testBoard[i - 1, j].name);
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(testBoard[i - 1, j].name);
+                    }
+
                 }
                 Console.ResetColor();
             }
@@ -90,9 +111,10 @@ internal class Board
             {
                 Console.Write("What piece do you want to put on the board? (K = king, Q = Queen, B = Bishop, R = Rook, N = knight)");
                 string piece = Console.ReadLine();
-                if (FigureNames.TryParse(piece.ToUpper(), out FigureNames pieceUpper))
+                if (FigureNames.TryParse(piece.ToUpper(), out FigureNames figurename))
                 {
-                    board[coordinates.number, coordinates.ParseLetterCoordinate(coordinates)] = char.ToUpper(char.Parse(piece));
+                    FigureStructure figure = new FigureStructure(figurename);
+                    testBoard[coordinates.number, coordinates.ParseLetterCoordinate(coordinates)] = figure;
                     PrintBoard();
                     NewCordValidate(piece, coord);
                     PrintBoard();
@@ -119,8 +141,9 @@ internal class Board
         var fromCoords = coordAction.StringCoordParse(oldcoord);
         var toCoords = coordAction.StringCoordParse(newcoord);
 
-        board[toCoords.number, coordAction.ParseLetterCoordinate(toCoords)] = char.ToUpper(board[fromCoords.number, coordAction.ParseLetterCoordinate(fromCoords)]);
-        board[fromCoords.number, coordAction.ParseLetterCoordinate(fromCoords)] = ' ';
+        testBoard[toCoords.number, coordAction.ParseLetterCoordinate(toCoords)] = testBoard[fromCoords.number, coordAction.ParseLetterCoordinate(fromCoords)];
+
+        testBoard[fromCoords.number, coordAction.ParseLetterCoordinate(fromCoords)] = new FigureStructure();
     }
 
     public void NewCordValidate(string piece, string coord)

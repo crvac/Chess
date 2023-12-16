@@ -24,7 +24,7 @@ public struct Coords
 
     public int ParseLetterCoordinate(Coords coordinate)
     {
-        int numericLetter = int.Parse(coordinate.letter.ToString());
+        int numericLetter = (int)Letters.Parse(typeof(Letters), coordinate.letter.ToString());
         return numericLetter;
     }
 }
